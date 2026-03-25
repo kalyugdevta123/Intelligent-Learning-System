@@ -1,6 +1,6 @@
 # Intelligent Learning System
 
-Functional hackathon prototype for adaptive learning with explainable analytics.
+Functional prototype for adaptive learning with explainable analytics.
 
 ## Problem
 Traditional classrooms and online platforms often deliver one-size-fits-all quizzes. Students with different mastery levels get the same sequence, reducing engagement and slowing learning.
