@@ -9,19 +9,30 @@ import streamlit as st
 from engine import (
     AttemptRecord,
     explain_recommendations,
+    get_adaptive_stage,
     integrity_flags,
-    pick_question,
-    select_next_difficulty,
+    select_next_question,
     summarize_progress,
 )
+from pdf_importer import default_topic_key, import_pdf_to_topic_dict
 
 
 DATA_PATH = Path(__file__).parent / "data" / "topics.json"
+IMPORTED_TOPICS_PATH = Path(__file__).parent / "data" / "imported_topics.json"
 
 
 def load_topics() -> dict:
     with DATA_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        base_topics = json.load(f)
+
+    imported_topics: dict = {}
+    if IMPORTED_TOPICS_PATH.exists():
+        with IMPORTED_TOPICS_PATH.open("r", encoding="utf-8") as f:
+            imported_topics = json.load(f)
+
+    # Imported topics override same keys if they exist.
+    base_topics.update(imported_topics)
+    return base_topics
 
 
 def init_state() -> None:
@@ -42,14 +53,16 @@ def init_state() -> None:
 
 
 def set_question() -> None:
-    difficulty = select_next_difficulty(st.session_state.attempts)
-    next_q = pick_question(
+    next_q = select_next_question(
         st.session_state.topic_questions,
-        difficulty,
+        st.session_state.attempts,
         st.session_state.used_ids,
     )
     st.session_state.current_question = next_q
-    st.session_state.question_start_time = time.time()
+    if next_q is None:
+        st.session_state.question_start_time = None
+    else:
+        st.session_state.question_start_time = time.time()
 
 
 def restart_session(topic_key: str, topics: dict) -> None:
@@ -79,6 +92,7 @@ def record_answer(selected_index: int) -> None:
             difficulty=q["difficulty"],
             correct=is_correct,
             response_time_s=elapsed,
+            selected_index=selected_index,
         )
     )
     st.session_state.used_ids.add(q["id"])
@@ -185,6 +199,21 @@ def render_dashboard() -> None:
                 st.warning(f)
 
 
+def render_adaptive_stage() -> None:
+    stage = get_adaptive_stage(st.session_state.attempts)
+    st.subheader(f'Adaptive Stage: {stage["stage"]}')
+    tone = stage.get("tone", "info")
+    message = stage.get("text", "")
+    if tone == "success":
+        st.success(message)
+    elif tone == "warning":
+        st.warning(message)
+    elif tone == "error":
+        st.error(message)
+    else:
+        st.info(message)
+
+
 def main() -> None:
     st.set_page_config(page_title="Intelligent Learning System", layout="wide")
     st.title("Intelligent Learning System")
@@ -207,6 +236,49 @@ def main() -> None:
 
         if st.button("Start New Session", type="primary"):
             restart_session(selected_key, topics)
+
+        with st.expander("Upload Quiz PDF (optional)"):
+            st.markdown("Upload a professor quiz PDF. We will extract MCQs and add them to the question bank.")
+            topic_title = st.text_input("Topic title for imported quiz", value="Imported Quiz")
+            uploaded = st.file_uploader("Quiz PDF", type=["pdf"])
+            max_questions = st.number_input("Max questions to extract", min_value=3, max_value=40, value=12, step=1)
+            max_pages = st.number_input("Max PDF pages to parse", min_value=2, max_value=40, value=10, step=1)
+
+            if st.button("Import PDF"):
+                if uploaded is None:
+                    st.warning("Please upload a PDF first.")
+                else:
+                    with st.spinner("Extracting text and generating MCQs..."):
+                        # Load existing imported topics so we can assign a new unique key.
+                        imported_topics: dict = {}
+                        if IMPORTED_TOPICS_PATH.exists():
+                            with IMPORTED_TOPICS_PATH.open("r", encoding="utf-8") as f:
+                                imported_topics = json.load(f)
+
+                        try:
+                            # Ensure unique topic key.
+                            new_topic_key = default_topic_key(
+                                topic_title=topic_title,
+                                existing_keys=set(topics.keys()) | set(imported_topics.keys()),
+                            )
+
+                            imported_topic = import_pdf_to_topic_dict(
+                                pdf_bytes=uploaded.read(),
+                                topic_title=topic_title,
+                                topic_key=new_topic_key,
+                                max_pages=int(max_pages),
+                                max_questions=int(max_questions),
+                            )
+
+                            imported_topics[new_topic_key] = imported_topic
+                            IMPORTED_TOPICS_PATH.parent.mkdir(parents=True, exist_ok=True)
+                            with IMPORTED_TOPICS_PATH.open("w", encoding="utf-8") as f:
+                                json.dump(imported_topics, f, ensure_ascii=False, indent=2)
+
+                            st.success("Quiz imported successfully. Reloading topics...")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Import failed: {e}")
 
         st.markdown("### Completion")
         st.write(f'Answered: `{len(st.session_state.attempts)}` / `{len(st.session_state.topic_questions)}`')
@@ -233,9 +305,11 @@ def main() -> None:
     if q is None:
         st.success("Topic completed. Great work.")
         st.session_state.include_recommendations = True
+        render_adaptive_stage()
         render_dashboard()
         return
 
+    render_adaptive_stage()
     st.subheader(f'Question ({q["difficulty"].upper()})')
     st.write(q["text"])
 
