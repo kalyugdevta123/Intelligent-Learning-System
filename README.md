@@ -51,6 +51,6 @@ Set environment variables before running Streamlit:
 
 ### Notes
 - The PDF-to-MCQ accuracy depends on PDF quality and the LLM’s extraction ability.
-- No “training” is required for the adaptive engine; it learns online from student attempts using Bayesian updates.
+- No training is required for the adaptive engine; it learns online from student attempts using Bayesian updates.
 
 
