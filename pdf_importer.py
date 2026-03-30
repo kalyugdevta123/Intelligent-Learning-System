@@ -6,6 +6,8 @@ from typing import Any
 import pdfplumber
 import requests
 
+from llm_client import chat_completion
+
 
 def _slugify(s: str) -> str:
     s = s.strip().lower()
@@ -49,20 +51,10 @@ def parse_questions_with_llm(
     Parse MCQs from raw_text using an OpenAI-compatible endpoint.
 
     Configure via environment variables:
-      - LLM_API_BASE (default: http://localhost:1234/v1)
-      - LLM_MODEL (required)
+      - LLM_API_BASE (default: http://127.0.0.1:1234/v1)
       - LLM_API_KEY (optional)
+      - LLM_MODEL (optional; if not set, this function auto-detects a loaded model)
     """
-    api_base = os.environ.get("LLM_API_BASE", "http://127.0.0.1:1234/v1").rstrip("/")
-    model = os.environ.get("LLM_MODEL")
-    api_key = os.environ.get("LLM_API_KEY", "")
-    timeout_s = int(os.environ.get("LLM_TIMEOUT_SECONDS", "240"))
-
-    if not model:
-        raise RuntimeError(
-            "Missing LLM_MODEL env var. Set it to your LM Studio / HuggingFace model id."
-        )
-
     # Keep context bounded to reduce timeout risk on local models.
     raw_text = raw_text[:12000]
 
@@ -95,64 +87,9 @@ Quiz text:
 {raw_text}
 """.strip()
 
-    headers = {"Content-Type": "application/json"}
-    if api_key:
-        headers["Authorization"] = f"Bearer {api_key}"
-
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": "You extract educational MCQs into strict JSON."},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0.2,
-        "max_tokens": 1800,
-    }
-
-    def _post(base: str):
-        return requests.post(
-            f"{base}/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=timeout_s,
-        )
-
-    # First try configured base, then fallback localhost <-> 127.0.0.1.
-    bases_to_try = [api_base]
-    if "localhost" in api_base:
-        bases_to_try.append(api_base.replace("localhost", "127.0.0.1"))
-    elif "127.0.0.1" in api_base:
-        bases_to_try.append(api_base.replace("127.0.0.1", "localhost"))
-
-    last_err: Exception | None = None
-    data = None
-    for base in bases_to_try:
-        try:
-            r = _post(base)
-            r.raise_for_status()
-            data = r.json()
-            break
-        except Exception as e:
-            last_err = e
-            continue
-
-    if data is None:
-        raise RuntimeError(
-            f"LLM request failed after trying {bases_to_try}. "
-            f"Tip: keep LM Studio server running and reduce max questions. Error: {last_err}"
-        )
-
-    content = (
-        data.get("choices", [{}])[0]
-        .get("message", {})
-        .get("content", "")
-    )
-    if not content:
-        raise RuntimeError("LLM returned empty content.")
-
+    content = chat_completion(prompt, temperature=0.2, max_tokens=1800)
     content = _strip_code_fences(content)
-    parsed = json.loads(content)
-    return parsed
+    return json.loads(content)
 
 
 def build_imported_topic(

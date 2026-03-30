@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from llm_client import chat_completion
 from engine import (
     AttemptRecord,
     explain_recommendations,
@@ -15,22 +16,18 @@ from engine import (
     summarize_progress,
 )
 from pdf_importer import default_topic_key, import_pdf_to_topic_dict
+from rag import build_or_load_index, retrieve, chunk_text_by_pages
 
 
 DATA_PATH = Path(__file__).parent / "data" / "topics.json"
-IMPORTED_TOPICS_PATH = Path(__file__).parent / "data" / "imported_topics.json"
 
 
 def load_topics() -> dict:
     with DATA_PATH.open("r", encoding="utf-8") as f:
         base_topics = json.load(f)
 
-    imported_topics: dict = {}
-    if IMPORTED_TOPICS_PATH.exists():
-        with IMPORTED_TOPICS_PATH.open("r", encoding="utf-8") as f:
-            imported_topics = json.load(f)
-
-    # Imported topics override same keys if they exist.
+    imported_topics = st.session_state.get("imported_topics", {})
+    
     base_topics.update(imported_topics)
     return base_topics
 
@@ -46,6 +43,7 @@ def init_state() -> None:
         "used_ids": set(),
         "last_feedback": None,
         "session_active": False,
+        "imported_topics": {},
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -249,17 +247,11 @@ def main() -> None:
                     st.warning("Please upload a PDF first.")
                 else:
                     with st.spinner("Extracting text and generating MCQs..."):
-                        # Load existing imported topics so we can assign a new unique key.
-                        imported_topics: dict = {}
-                        if IMPORTED_TOPICS_PATH.exists():
-                            with IMPORTED_TOPICS_PATH.open("r", encoding="utf-8") as f:
-                                imported_topics = json.load(f)
-
                         try:
                             # Ensure unique topic key.
                             new_topic_key = default_topic_key(
                                 topic_title=topic_title,
-                                existing_keys=set(topics.keys()) | set(imported_topics.keys()),
+                                existing_keys=set(topics.keys()),
                             )
 
                             imported_topic = import_pdf_to_topic_dict(
@@ -270,21 +262,102 @@ def main() -> None:
                                 max_questions=int(max_questions),
                             )
 
-                            imported_topics[new_topic_key] = imported_topic
-                            IMPORTED_TOPICS_PATH.parent.mkdir(parents=True, exist_ok=True)
-                            with IMPORTED_TOPICS_PATH.open("w", encoding="utf-8") as f:
-                                json.dump(imported_topics, f, ensure_ascii=False, indent=2)
+                            st.session_state.imported_topics[new_topic_key] = imported_topic
 
                             st.success("Quiz imported successfully. Reloading topics...")
                             st.rerun()
                         except Exception as e:
                             st.error(f"Import failed: {e}")
 
+        with st.expander("Upload Study Material"):
+            rag_pdf = st.file_uploader("Notes PDF for Q&A and Summaries", type=["pdf"], key="rag_pdf")
+
+            if rag_pdf is not None:
+                if st.session_state.get("last_uploaded_file_id") != rag_pdf.file_id:
+                    with st.spinner("Processing document..."):
+                        try:
+                            pdf_bytes = rag_pdf.read()
+                            base_dir = Path(__file__).parent
+                            doc_id, index, chunks = build_or_load_index(
+                                pdf_bytes=pdf_bytes,
+                                base_dir=base_dir,
+                            )
+                            st.session_state.rag_doc_id = doc_id
+                            st.session_state.rag_index = index
+                            st.session_state.rag_chunks = chunks
+                            st.session_state.last_uploaded_file_id = rag_pdf.file_id
+                            st.success("Document processed and ready for Q&A!")
+                        except Exception as e:
+                            st.error(f"Processing failed: {e}")
+
+            if st.button("Generate PDF Summary"):
+                if rag_pdf is None:
+                    st.warning("Upload a PDF first.")
+                else:
+                    with st.spinner("Generating summary using LLM..."):
+                        try:
+                            pages = chunk_text_by_pages(rag_pdf.read(), max_pages=20)
+                            # concise summary prompt; keep input bounded
+                            sample_text = "\n\n".join([f"(Page {p}) {t}" for p, t in pages])[:12000]
+                            prompt = (
+                                "Summarize the following PDF notes.\n"
+                                "Output:\n"
+                                "- 8-12 bullet summary\n"
+                                "- Key definitions (5-10 items)\n"
+                                "- Important formulas/facts (if any)\n\n"
+                                f"PDF text:\n{sample_text}"
+                            )
+                            st.session_state.rag_summary = chat_completion(prompt, temperature=0.2, max_tokens=900)
+                            st.success("Summary generated.")
+                        except Exception as e:
+                            st.error(f"Summary failed: {e}")
+
         st.markdown("### Completion")
         st.write(f'Answered: `{len(st.session_state.attempts)}` / `{len(st.session_state.topic_questions)}`')
 
     if not st.session_state.session_active:
         st.info("Start a session from the sidebar.")
+        # Allow Q&A even without starting quiz session.
+        st.divider()
+        st.header("Study Material Q&A")
+        if st.session_state.get("rag_summary"):
+            st.subheader("PDF Summary")
+            st.write(st.session_state.rag_summary)
+
+        q_rag = st.text_input("Ask a question from the uploaded PDF", key="rag_question")
+        ask = st.button("Ask")
+        if ask:
+            if not st.session_state.get("rag_index") or not st.session_state.get("rag_chunks"):
+                st.warning("Upload and process a PDF from the sidebar first.")
+            elif not q_rag.strip():
+                st.warning("Type a question first.")
+            else:
+                with st.spinner("Retrieving sources and generating answer..."):
+                    sources = retrieve(
+                        query=q_rag,
+                        index=st.session_state.rag_index,
+                        chunks=st.session_state.rag_chunks,
+                    )
+                    sources_text = "\n\n".join(
+                        [f"[Source {i+1}] Page {s['page']}: {s['text']}" for i, s in enumerate(sources)]
+                    )[:12000]
+                    prompt = (
+                        "Answer the user question using ONLY the provided sources.\n"
+                        "Return:\n"
+                        "1) A clear answer\n"
+                        "2) 3-6 bullet explanation\n"
+                        "3) Citations like [Source 1], [Source 2] inline\n\n"
+                        f"Question: {q_rag}\n\n"
+                        f"Sources:\n{sources_text}"
+                    )
+                    answer = chat_completion(prompt, temperature=0.2, max_tokens=800)
+                    st.subheader("Answer")
+                    st.write(answer)
+                    st.subheader("Sources Used")
+                    for i, s in enumerate(sources):
+                        st.info(f"[Source {i+1}] Page {s['page']} — score {s['score']:.3f}")
+                        st.caption(s["text"])
+
         return
 
     q = st.session_state.current_question

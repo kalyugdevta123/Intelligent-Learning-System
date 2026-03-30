@@ -1,0 +1,484 @@
+{
+  "test_quiz": {
+    "title": "Test Quiz",
+    "difficulty_order": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "questions": [
+      {
+        "id": "imp_test_quiz_0",
+        "difficulty": "easy",
+        "concept": "Country known as “the Land of festivals”",
+        "text": "Which country is known as “the Land of festivals”?",
+        "options": [
+          "India",
+          "China",
+          "Japan",
+          "South Korea"
+        ],
+        "answer_index": 0,
+        "explanation": "India is known for its diverse culture and numerous festivals throughout the year."
+      },
+      {
+        "id": "imp_test_quiz_1",
+        "difficulty": "easy",
+        "concept": "Himalayan Mountaineering Institute location",
+        "text": "Where is Himalayan Mountaineering Institute located?",
+        "options": [
+          "Darjeeling, India",
+          "Mumbai, India",
+          "Kolkata, India",
+          "Chennai, India"
+        ],
+        "answer_index": 0,
+        "explanation": "The Himalayan Mountaineering Institute is located in Darjeeling, India."
+      },
+      {
+        "id": "imp_test_quiz_2",
+        "difficulty": "easy",
+        "concept": "Number of Nobel Prize disciplines",
+        "text": "For how many disciplines is Nobel Prize awarded?",
+        "options": [
+          "4",
+          "6",
+          "8",
+          "10"
+        ],
+        "answer_index": 1,
+        "explanation": "The Nobel Prize is awarded in six disciplines: Physics, Chemistry, Medicine, Literature, Economics, and Peace."
+      },
+      {
+        "id": "imp_test_quiz_3",
+        "difficulty": "easy",
+        "concept": "Tennis player known as “The King of Clay”",
+        "text": "Name the tennis Player who is known as “The King of Clay”?",
+        "options": [
+          "Rafael Nadal",
+          "Roger Federer",
+          "Novak Djokovic",
+          "Andy Murray"
+        ],
+        "answer_index": 0,
+        "explanation": "Rafael Nadal is known for his dominance on clay courts."
+      },
+      {
+        "id": "imp_test_quiz_4",
+        "difficulty": "easy",
+        "concept": "World Heritage City in India",
+        "text": "Which Indian City has been declared as World Heritage City (WHC) by UNESCO recently?",
+        "options": [
+          "Ahmadabad",
+          "Varanasi",
+          "Jaipur",
+          "Agra"
+        ],
+        "answer_index": 0,
+        "explanation": "Ahmedabad was declared a World Heritage City by UNESCO in 2017."
+      },
+      {
+        "id": "imp_test_quiz_5",
+        "difficulty": "easy",
+        "concept": "Author of “James pond”",
+        "text": "Who wrote the famous novel “James pond”?",
+        "options": [
+          "Ian Lancaster Fleming",
+          "J.K. Rowling",
+          "Agatha Christie",
+          "Arthur Conan Doyle"
+        ],
+        "answer_index": 0,
+        "explanation": "Ian Lancaster Fleming is the author of the James Bond series."
+      },
+      {
+        "id": "imp_test_quiz_6",
+        "difficulty": "easy",
+        "concept": "Oscar award winner",
+        "text": "Who won Oscar award for 36 times?",
+        "options": [
+          "Walt Disney",
+          "Alfred Hitchcock",
+          "Stanley Kubrick",
+          "Steven Spielberg"
+        ],
+        "answer_index": 0,
+        "explanation": "Walt Disney holds the record for the most Academy Awards won by an individual."
+      },
+      {
+        "id": "imp_test_quiz_7",
+        "difficulty": "easy",
+        "concept": "Establisher of first Blood Bank",
+        "text": "Who established the first Blood Bank?",
+        "options": [
+          "Bernard Fantus",
+          "Carl Landsteiner",
+          "Alexander Fleming",
+          "Louis Pasteur"
+        ],
+        "answer_index": 0,
+        "explanation": "Bernard Fantus is credited with establishing the first blood bank."
+      },
+      {
+        "id": "imp_test_quiz_8",
+        "difficulty": "easy",
+        "concept": "Indian to beat computers in Mathematical Wizardry",
+        "text": "Who is the Indian to beat the computers in Mathematical Wizardry?",
+        "options": [
+          "Shakunthala Devi",
+          "Ramanujan",
+          "Srinivasa Ramanujan",
+          "Vikram Sarabhai"
+        ],
+        "answer_index": 0,
+        "explanation": "Shakuntala Devi was known for her exceptional mental calculation abilities."
+      },
+      {
+        "id": "imp_test_quiz_9",
+        "difficulty": "easy",
+        "concept": "Host of 2017 World Petroleum Congress",
+        "text": "Which Country Hosted 2017 World Petroleum Congress (WPC) International Conference?",
+        "options": [
+          "Turkey",
+          "India",
+          "China",
+          "Japan"
+        ],
+        "answer_index": 0,
+        "explanation": "The 2017 World Petroleum Congress was held in Istanbul, Turkey."
+      },
+      {
+        "id": "imp_test_quiz_10",
+        "difficulty": "easy",
+        "concept": "Author of “India at risk”",
+        "text": "Who wrote the book, “India at risk”?",
+        "options": [
+          "Jaswanth Singh",
+          "Arundhati Roy",
+          "Amitav Ghosh",
+          "Salman Rushdie"
+        ],
+        "answer_index": 0,
+        "explanation": "The author of the book 'India at Risk' is Jaswant Singh."
+      },
+      {
+        "id": "imp_test_quiz_11",
+        "difficulty": "easy",
+        "concept": "Location of International court of Justice",
+        "text": "Where is the International court of Justice located?",
+        "options": [
+          "Hague",
+          "New York",
+          "London",
+          "Paris"
+        ],
+        "answer_index": 0,
+        "explanation": "The International Court of Justice is located in The Hague, Netherlands."
+      },
+      {
+        "id": "imp_test_quiz_12",
+        "difficulty": "easy",
+        "concept": "Definition of Limnology",
+        "text": "What is Limnology?",
+        "options": [
+          "Study of lakes",
+          "Study of rivers",
+          "Study of oceans",
+          "Study of atmosphere"
+        ],
+        "answer_index": 0,
+        "explanation": "Limnology is the study of freshwater ecosystems, particularly lakes and rivers."
+      },
+      {
+        "id": "imp_test_quiz_13",
+        "difficulty": "easy",
+        "concept": "City known as “City of Joy”",
+        "text": "Which City in India is known as the “City of Joy”?",
+        "options": [
+          "Kolkata",
+          "Mumbai",
+          "Chennai",
+          "Bangalore"
+        ],
+        "answer_index": 0,
+        "explanation": "Kolkata is often referred to as the 'City of Joy'."
+      },
+      {
+        "id": "imp_test_quiz_14",
+        "difficulty": "easy",
+        "concept": "First Asian winner of Nobel Prize",
+        "text": "Who was the first Asian winner of the Nobel Prize?",
+        "options": [
+          "Rabindranath Tagore",
+          "Mahatma Gandhi",
+          "Subhas Chandra Bose",
+          "Jawaharlal Nehru"
+        ],
+        "answer_index": 0,
+        "explanation": "Rabindranath Tagore was the first Asian to win a Nobel Prize."
+      }
+    ]
+  },
+  "test_quiz2": {
+    "title": "test_quiz2",
+    "difficulty_order": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "questions": [
+      {
+        "id": "imp_test_quiz2_0",
+        "difficulty": "easy",
+        "concept": "banking safety",
+        "text": "It is safe to keep our savings with banks because",
+        "options": [
+          "A. Earns interest",
+          "B. Can be withdrawn anytime",
+          "C. All of above",
+          "D. None of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_1",
+        "difficulty": "easy",
+        "concept": "banking safety",
+        "text": "ATM password should be shared only with",
+        "options": [
+          "A. Spouse",
+          "B. Obedient son",
+          "C. Obedient daughter",
+          "D. None of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_2",
+        "difficulty": "easy",
+        "concept": "KYC",
+        "text": "KYC means",
+        "options": [
+          "A. Know your customer",
+          "B. Know your character",
+          "C. Both of above",
+          "D. None of above"
+        ],
+        "answer_index": 0,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_3",
+        "difficulty": "easy",
+        "concept": "loans from money lenders",
+        "text": "Loans from money lenders are",
+        "options": [
+          "A. With High rate of interest",
+          "B. No proper accounting",
+          "C. No transparency",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_4",
+        "difficulty": "easy",
+        "concept": "life insurance",
+        "text": "Life insurance means",
+        "options": [
+          "A. Insurance of human",
+          "B. Insurance of life of human and machines",
+          "C. Insurance of Life of Machines",
+          "D. All of above"
+        ],
+        "answer_index": 0,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_5",
+        "difficulty": "easy",
+        "concept": "general insurance",
+        "text": "General Insurance relates to",
+        "options": [
+          "A. Fire",
+          "B. Theft",
+          "C. Burglary",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_6",
+        "difficulty": "easy",
+        "concept": "bank loans",
+        "text": "Bank provides loans for",
+        "options": [
+          "A. Home",
+          "B. Car",
+          "C. Education",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_7",
+        "difficulty": "medium",
+        "concept": "currency notes",
+        "text": "Which currency note has security thread?",
+        "options": [
+          "A. Rs.50/-",
+          "B. Rs.100/-",
+          "C. Rs.500/-",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_8",
+        "difficulty": "medium",
+        "concept": "bank lockers",
+        "text": "The safest place for keeping money is",
+        "options": [
+          "A. A pit dug in the ground",
+          "B. An iron box",
+          "C. Bank",
+          "D. Money lender"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_9",
+        "difficulty": "medium",
+        "concept": "bank lockers",
+        "text": "Gold and silver ornaments should be kept in bank lockers because",
+        "options": [
+          "A. It is safe",
+          "B. No risk of theft",
+          "C. Both (a) & (b)",
+          "D. None of above"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_10",
+        "difficulty": "medium",
+        "concept": "bank pass book",
+        "text": "Bank Pass Book is",
+        "options": [
+          "A. Issued by Bank",
+          "B. Contains transaction details of bank account",
+          "C. Shows balance in account",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_11",
+        "difficulty": "medium",
+        "concept": "bank interest",
+        "text": "Banks pays interest on",
+        "options": [
+          "A. Deposits",
+          "B. Loans",
+          "C. Both (a) & (b)",
+          "D. None of above"
+        ],
+        "answer_index": 0,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_12",
+        "difficulty": "medium",
+        "concept": "bank charges",
+        "text": "Bank charges interest on",
+        "options": [
+          "A. Deposits",
+          "B. Loans",
+          "C. Both (a) & (b)",
+          "D. None of above"
+        ],
+        "answer_index": 1,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_13",
+        "difficulty": "hard",
+        "concept": "internet banking",
+        "text": "Internet banking refers to",
+        "options": [
+          "A. a fixed sum is deposited every month",
+          "B. period of deposit is a fixed tenure",
+          "C. Operation of account through internet",
+          "D. All of above"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_14",
+        "difficulty": "hard",
+        "concept": "recurring deposits",
+        "text": "In Recurring Deposits,",
+        "options": [
+          "A. Cash withdrawal",
+          "B. Account enquiry",
+          "C. Statement of account",
+          "D. All of above"
+        ],
+        "answer_index": 3,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_15",
+        "difficulty": "hard",
+        "concept": "RuPay Debit Card",
+        "text": "What is RuPay Debit Card?",
+        "options": [
+          "A. 12 digit number card",
+          "B. Identity proof issued by UIDAI",
+          "C. Accepted at all ATMs & PoS machines",
+          "D. All of above"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_16",
+        "difficulty": "hard",
+        "concept": "Aadhaar",
+        "text": "Aadhaar is",
+        "options": [
+          "A. A kind of utensil",
+          "B. Primary Account Number",
+          "C. Both (a) & (b)",
+          "D. None of above"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      },
+      {
+        "id": "imp_test_quiz2_17",
+        "difficulty": "hard",
+        "concept": "PAN",
+        "text": "PAN means",
+        "options": [
+          "A. A kind of utensil",
+          "B. Primary Account Number",
+          "C. Permanent Account Number",
+          "D. None of above"
+        ],
+        "answer_index": 2,
+        "explanation": ""
+      }
+    ]
+  }
+}

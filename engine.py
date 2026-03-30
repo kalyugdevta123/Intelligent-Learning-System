@@ -70,10 +70,7 @@ def _correct_streak_for_difficulty(attempts: list[AttemptRecord], difficulty: st
 def _latest_medium_remediation_state(
     attempts: list[AttemptRecord],
 ) -> tuple[bool, set[str]]:
-    """
-    Trigger remediation when last 5 medium attempts have majority wrong.
-    Stay in remediation for a few easy questions, focused on weak medium concepts.
-    """
+    
     medium_indices = [i for i, a in enumerate(attempts) if a.difficulty == "medium"]
     if len(medium_indices) < MEDIUM_WINDOW:
         return False, set()

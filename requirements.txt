@@ -3,3 +3,5 @@ pandas
 plotly
 pdfplumber
 requests
+sentence-transformers
+faiss-cpu
